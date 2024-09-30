@@ -1,0 +1,138 @@
+@import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+
+body{
+	margin: 0;
+	padding: 0;
+	background: #fff;
+
+	color: #fff;
+	font-family: Arial;
+	font-size: 12px;
+}
+
+.center{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 95vh;
+}
+
+.body{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	//background-image: url(https://easbcn.com/wp-content/uploads/2020/01/avionesmasgrandesdelmundo_Antonov-An-225-Mriya-1030x582.png);
+	//background-image: url(https://cdn2.civitatis.com/estados-unidos/los-angeles/guia/aeropuerto-los-angeles.jpg);
+	//background-image: url(https://vuela.tag.com.gt/hubfs/20170725-vuelos-a-guatemala-aeropuertos-centroam%C3%A9rica/Vuelos%20a%20Guatemala%20Aeropuerto.jpg);
+	background-image: url(https://media.istockphoto.com/vectors/modern-airport-terminal-and-runaway-cartoon-vector-vector-id1130188074?k=20&m=1130188074&s=612x612&w=0&h=Gzby5pkMYK_1_x-niiGSvQTw5CPmg67lT98Ml3G16J8=);
+	background-size: cover;
+	filter: blur(10px);
+	z-index: -10;
+}
+
+.divisor-1{
+	position: absolute;
+	top: calc(50% - 90px);
+	left: calc(50% - 400px);
+	z-index: -1;
+	display: inline-block;
+	width: 32%;
+	height: auto;
+}
+
+.header div{
+	float: left;
+	color: #0930b1;
+	font-family: 'Exo', sans-serif;
+	font-size: 35px;
+	font-weight: bold;
+    z-index: 2;
+}
+
+.header div span{
+	color: orange !important;
+}
+
+.divisor-2{
+	position: absolute;
+	top: calc(50% - 75px);
+	left: calc(50% - 50px);
+	height: 150px;
+	width: 350px;
+	padding: 15px;
+	z-index: 0;
+}
+
+.divisor-2 input[type=text]{
+	width: 250px;
+	height: 30px;
+	background: transparent;
+	border-radius: 2px;
+	color: rgb(0, 0, 0);
+	font-family: 'Exo', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 4px;
+}
+
+.divisor-2 input[type=button]{
+	width: 100%;
+	height: 35px;
+	background: #0930b1;
+	border: 1px solid #0930b1;
+	cursor: pointer;
+	border-radius: 10px;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 6px;
+	margin-top: 10px;
+}
+
+::-webkit-input-placeholder{
+   color: black;
+}
+
+::-moz-input-placeholder{
+   color: black;
+}
+
+.formulario {
+	min-width: 150px;
+	max-width: 100px;
+	width: 100%;
+}
+  
+.width {
+	width: 100%;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+	color: #0930b1 !important;
+}
+
+
+::ng-deep.mat-form-field-ripple {
+	background-color: #0930b1 !important;;
+}
+
+button{
+	width: 100%;
+	height: 35px;
+	background: #0930b1;
+	border: 1px solid #0930b1;
+	cursor: pointer;
+	border-radius: 10px;
+	color: #fff;
+	font-family: 'Exo', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 6px;
+	margin-top: 10px;
+}

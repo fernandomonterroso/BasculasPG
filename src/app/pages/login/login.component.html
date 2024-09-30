@@ -1,0 +1,16 @@
+<form (ngSubmit)="aprobacion()">
+    <div class="mb-3">
+      <label for="gafete" class="form-label">No. Gafete</label>
+      <input
+        type="text"
+        id="gafete"
+        class="form-control"
+        placeholder="Ex. 00-00000"
+        maxlength="8"
+        [(ngModel)]="gafete"
+        [ngModelOptions]="{standalone: true}" 
+      >
+    </div>
+    <button type="submit" class="btn btn-primary">Ingresar</button>
+  </form>
+  
