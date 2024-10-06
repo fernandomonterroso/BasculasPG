@@ -15,6 +15,9 @@
     "test:headless": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "dependencies": {
+    "@ag-grid-community/angular": "^32.2.1",
+    "@ag-grid-community/client-side-row-model": "^32.2.1",
+    "@ag-grid-community/core": "^32.2.1",
     "@angular/animations": "^18.2.4",
     "@angular/cdk": "^18.2.6",
     "@angular/common": "^18.2.4",
@@ -27,6 +30,8 @@
     "@angular/router": "^18.2.4",
     "@ng-bootstrap/ng-bootstrap": "^17.0.1",
     "@popperjs/core": "^2.11.8",
+    "ag-grid-angular": "^32.2.1",
+    "ag-grid-community": "^32.2.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "ngx-toastr": "^19.0.0",

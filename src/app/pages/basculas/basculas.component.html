@@ -1,2 +1,24 @@
-<p>basculas works!</p>
-<h1>basculas works!</h1>
+<div class="container" style="max-width: 98vw;">
+  <br />
+  <input
+    type="text"
+    class="form-control mb-3"
+    placeholder="Buscar..."
+    (input)="onQuickFilterChanged($event)"
+  />
+
+  <div class="content" style="width: 100%; height: 100%">
+    <ag-grid-angular
+      style="width: 100%; height: 100%"
+      [class]="themeClass"
+      [rowData]="rowData"
+      [columnDefs]="colDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="paginationPageSize"
+      [quickFilterText]="quickFilterValue"
+      [animateRows]="true"
+      [domLayout]="'autoHeight'"
+    ></ag-grid-angular>
+  </div>
+</div>
