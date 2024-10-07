@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
-import { Bascula } from '../models/bascula.model';
+import { ApiResponse, Bascula } from '../interfaces/globales.interface';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -19,9 +19,9 @@ export class DataService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     
     return this.http
-      .get<{ success: boolean; message: string; data: Bascula[] }>(`${this.endpointApi}/Data/getBasculasByBod?bodega_value=${bascula}`, { headers })
+      .get<ApiResponse<Bascula[]>>(`${this.endpointApi}/Data/getBasculasByBod?bodega_value=${bascula}`, { headers })
       .pipe(
-        map((response: { success: boolean; message: string; data: Bascula[] }) => {
+        map((response: ApiResponse<Bascula[]>) => {
           if (response.success) {
             return response.data;  // Retorna las básculas desde data si success es true
           } else {
@@ -29,9 +29,26 @@ export class DataService {
           }
         }),
         catchError(error => {
-          console.error('Error en la solicitud de básculas:', error);
           return throwError(() => new Error(error.message || 'Error del servidor'));
         })
       );
   }
+
+  getUser(): Observable<any> {
+    return this.http.get<any>(`${this.endpointApi}getUsuario`);
+  }
+
+  getKeysGuia(guia: string, bodega: string): Observable<any> {
+    const url = `${this.endpointApi}/Data/getKeysGuia?guia=${guia}&bodega=${bodega}`;
+    return this.http.get<any>(url);
+  }
+
+  checkBascula(endpoint: string): Observable<any> {
+    return this.http.get<any>(endpoint);
+  }
+
+  getPeso(endpoint: string): Observable<any> {
+    return this.http.get<any>(endpoint);
+  }
+
 }

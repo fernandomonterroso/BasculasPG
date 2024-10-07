@@ -3,7 +3,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColDef, ModuleRegistry } from '@ag-grid-community/core';
 import { DataService } from '../../shared/services/data.service';
-import { Bascula } from '../../shared/models/bascula.model';
+import { Bascula } from '../../shared/interfaces/globales.interface';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

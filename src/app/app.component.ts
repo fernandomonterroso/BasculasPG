@@ -1,26 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgbModal, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { NavbarComponent } from "./shared/components/navbar/navbar.component";
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    NgbDatepickerModule,
-    NavbarComponent
-],
+  imports: [RouterOutlet, NgbDatepickerModule, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-
-  constructor(private modalService: NgbModal) {
-  }
+  constructor(private modalService: NgbModal) {}
 
   public open(modal: any): void {
     this.modalService.open(modal);
   }
-
 }
