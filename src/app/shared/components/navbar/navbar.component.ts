@@ -1,12 +1,33 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, RouterModule], // Importa RouterModule
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss'] // Asegúrate de que sea styleUrls
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
+  currentRoute: string;
 
+  constructor(private router: Router) {
+    this.currentRoute = this.router.url;
+    router.events.subscribe(() => {
+      if (this.router.url !== this.currentRoute) {
+        this.currentRoute = this.router.url;
+      }
+    });
+  }
+
+  public option = 0;
+
+  ngOnInit(): void {}
+
+  collapsed = true;
+
+  toggleCollapsed(): void {
+    this.collapsed = !this.collapsed;
+  }
 }

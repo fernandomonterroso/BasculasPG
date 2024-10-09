@@ -1,0 +1,9 @@
+a {
+    color: rgb(255, 255, 255);
+    z-index: 2;
+}
+
+a.active {
+    font-weight: bold;
+    color: green;
+}

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, Bascula } from '../interfaces/globales.interface';
+import { ApiResponse, Bascula, Guia } from '../interfaces/globales.interface';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -40,6 +40,11 @@ export class DataService {
 
   getKeysGuia(guia: string, bodega: string): Observable<any> {
     const url = `${this.endpointApi}/Data/getKeysGuia?guia=${guia}&bodega=${bodega}`;
+    return this.http.get<any>(url);
+  }
+
+  getPesos(guia: Guia, corelativoPeso: number): Observable<any> {
+    const url = `${this.endpointApi}/Data/getPesos?corr=${guia.GUIA_CORR}&anio=${guia.GUIA_ANIO}&tipo=${guia.TIPOGUIA_COD}&corelativoPeso=${corelativoPeso}`;
     return this.http.get<any>(url);
   }
 

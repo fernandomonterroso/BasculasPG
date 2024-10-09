@@ -50,3 +50,37 @@ export interface Bodega {
     message: string;
     data: T;
   }
+
+  export interface Peso {
+    Peso_Usobascula: string;
+    Bas_cod: string;
+    Peso_Cfrio: string;
+    Tembalaje_Cod: string | null;
+    Peso_Pesobrutokg: number;
+    PESO_PESOBRUTOLB: number;
+    Peso_Fechor: string;
+    Peso_Aniocod: number | null;
+    Peso_Codigo: number | null;
+    peso_corr: number;
+    Peso_Correquipo: number;
+    Guia_Corr: number;
+  }
+  
+
+  export interface InfoPeso {
+    CORRELATIVO: number;           // Correlativo de información
+    PARAMETRO: number;             // Parámetro (puede ser usado para diferentes propósitos)
+    PESO_CODIGO: number;           // Código del peso
+    PESO_ANIOCOD: number;          // Año del peso
+  }
+
+  export interface DetallePeso {
+    DETPESO_CORR: number;
+    DETPESO_ANIOREP: number;
+    DETPESO_CODREP: number;
+    DETPESO_BASCULA: number;
+    DETPESO_TARA: number;
+    DETPESO_PESOBRUTO: number;
+    DETPESO_PESOBRUTOKG: number;
+    DETPESO_BASCULALB?: string;  // Este valor parece ser calculado y devuelto como cadena con decimales
+}
