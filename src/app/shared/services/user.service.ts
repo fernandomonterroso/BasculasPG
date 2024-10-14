@@ -49,7 +49,7 @@ export class UserService {
         this.user = response.data.data;
 
         // Navegar al dashboard después de iniciar sesión
-        this.router.navigate(['/']);
+        this.router.navigate(['/pesaje']);
       }
     } catch (error) {
       console.error('Error al iniciar sesión', error);

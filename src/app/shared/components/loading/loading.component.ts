@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+import { Subject } from 'rxjs';
+import { GlobalService } from '../../../core/interceptor/global.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-loading',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './loading.component.html',
-  styleUrl: './loading.component.scss'
+  styleUrls: ['./loading.component.scss']
 })
-export class LoadingComponent {
+export class LoadingComponent implements AfterViewInit {
+  isLoading$!: Subject<boolean>; // El Subject que contiene el estado de carga
 
+  constructor(private _GlobalService: GlobalService) {}
+
+  ngAfterViewInit() {
+    this.isLoading$ = this._GlobalService.isLoading$;
+  }
 }

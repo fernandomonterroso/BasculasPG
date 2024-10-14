@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, Bascula, Guia } from '../interfaces/globales.interface';
+import { ApiResponse, Bascula, Guia, GuiaParametros, InfoPeso } from '../interfaces/globales.interface';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -43,9 +43,30 @@ export class DataService {
     return this.http.get<any>(url);
   }
 
+  GetGuiaXManifiesto(man_anio:string,man_corr:string,tipoguia_cod:string): Observable<any> {
+    const url = `${this.endpointApi}/Data/getGuiaXManifiesto?man_anio=${man_anio}&man_corr=${man_corr}&tipoguia_cod=${tipoguia_cod}`;
+    return this.http.get<any>(url);
+  }
+
   getPesos(guia: Guia, corelativoPeso: number): Observable<any> {
     const url = `${this.endpointApi}/Data/getPesos?corr=${guia.GUIA_CORR}&anio=${guia.GUIA_ANIO}&tipo=${guia.TIPOGUIA_COD}&corelativoPeso=${corelativoPeso}`;
     return this.http.get<any>(url);
+  }
+
+  postPesos(pesos: any, infoInterna: any, guiaData: Guia,guiaParametros: GuiaParametros,infoPeso: InfoPeso): Observable<any> {
+    const url = `${this.endpointApi}/Data/PostPeso`;
+  
+    // Estructura el cuerpo de la solicitud
+    const body = {
+      pesos: pesos,
+      infoInterna: infoInterna,
+      guiaParametros:guiaParametros,
+      infoPeso: infoPeso,
+      guiaData: guiaData,
+    };
+  
+    // Realiza la solicitud POST con el cuerpo
+    return this.http.post<any>(url, body);
   }
 
   checkBascula(endpoint: string): Observable<any> {

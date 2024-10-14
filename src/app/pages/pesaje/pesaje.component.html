@@ -57,8 +57,8 @@
       </div>
     </div>
     <div class="topMenu__user">
-      <div class="avatar">AD</div>
-      <div class="bold--darkBlue">Admin</div>
+      <div class="avatar">Gafete</div>
+      <div class="bold--darkBlue">{{user.USER_GAFETE}}</div>
     </div>
   </header>
   <main class="content">
@@ -68,7 +68,10 @@
         <div class="roundBox__item roundBox__item--icon">
           <div class="icon"></div>
           <div class="desc">
-            <select [(ngModel)]="guiaParametros.bod">
+            <select
+              [(ngModel)]="guiaParametros.bod"
+              (ngModelChange)="onBodegaChange($event)"
+            >
               <option *ngFor="let bodega of resBodegas" [ngValue]="bodega">
                 {{ bodega.title }} - {{ bodega.TIPOGUIA_COD }}
               </option>
@@ -81,7 +84,7 @@
         <div class="labelCss">Información de guía requerida</div>
 
         <div class="roundBox__item">
-          <form (ngSubmit)="getGuiaData()" method="GET">
+          <form #form1="ngForm" (ngSubmit)="getGuiaData()" method="GET">
             GUÍA:
             <input
               type="text"
@@ -100,15 +103,20 @@
               name="guia_num"
               class="me-2"
               style="width: 150px"
+              required
             />
-            <button class="btn btn-primary" type="submit">
-              <i class="fa-solid fa-magnifying-glass"></i>
+            <button
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="form1.invalid"
+            >
+              <i class="fa fa-search" aria-hidden="true"></i>
             </button>
           </form>
         </div>
 
         <div class="roundBox__item">
-          <form (ngSubmit)="getGuiaXManifiesto()" method="POST">
+          <form #form2="ngForm" (ngSubmit)="GetGuiaXManifiesto()" method="GET">
             MANIFIESTO:
             <input
               type="text"
@@ -127,8 +135,12 @@
               style="width: 50px"
               required
             />
-            <button class="btn btn-primary" type="submit">
-              <i class="far fa-list"></i>
+            <button
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="form2.invalid"
+            >
+              <i class="fa fa-plane"></i>
             </button>
           </form>
         </div>
@@ -189,6 +201,47 @@
               <label for="c2">Cobro en caja</label>
             </div>
           </div> -->
+
+          <div class="separator"></div>
+          <div class="weighing__row">
+            <div class="checkbox">
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="pesoOption"
+                  id="agregarPeso"
+                  [(ngModel)]="infoInterna.repeso"
+                  [value]="false"
+                />
+                <label class="form-check-label" for="agregarPeso"
+                  >Sumar peso</label
+                >
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="pesoOption"
+                  id="sumarPeso"
+                  [(ngModel)]="infoInterna.repeso"
+                  [value]="true"
+                />
+                <label class="form-check-label" for="sumarPeso"
+                  >Agregar peso</label
+                >
+              </div>
+            </div>
+            <!-- <div class="checkbox">
+              <input
+                id="c2"
+                type="checkbox"
+                [(ngModel)]="guardarPesos.COBRO_ENCAJA"
+              />
+              <label for="c2">Cobro en caja</label>
+            </div> -->
+          </div>
         </div>
 
         <div class="weighing__main">
@@ -196,24 +249,20 @@
             <thead>
               <tr>
                 <th>Báscula</th>
-                <th>Cuarto Frío</th>
-                <th>Peso (Kg)</th>
-                <th>Peso (Lbs)</th>
+                <th>Peso bruto (Lb)</th>
+                <th>Peso bruto (Kg)</th>
+                <th>Peso tara (Kg)</th>
+                <th>Peso neto (Kg)</th>
                 <th>Fecha / Hora</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let peso of pesoGuia" [attr.key]="peso.peso_corr">
                 <td>{{ peso.Bas_cod }}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    [checked]="peso.Peso_Cfrio === 'true'"
-                    disabled
-                  />
-                </td>
-                <td>{{ peso.Peso_Pesobrutokg }} kg.</td>
                 <td>{{ peso.PESO_PESOBRUTOLB }} lb.</td>
+                <td>{{ peso.Peso_Pesobrutokg }} kg.</td>
+                <td>{{ peso.PESO_TARAKG }} kg.</td>
+                <td>{{ peso.PESO_NETOKG }} kg.</td>
                 <!-- Convertir Kg a Lbs -->
                 <td>{{ peso.Peso_Fechor }}</td>
               </tr>
@@ -221,9 +270,10 @@
             <tfoot>
               <tr>
                 <td>Total</td>
-                <td></td>
-                <td>{{ guardarPesos.PESO_PESOBRUTOKG }} kg.</td>
                 <td>{{ guardarPesos.PESO_PESOBRUTOLB }} lb.</td>
+                <td>{{ guardarPesos.PESO_PESOBRUTOKG }} kg.</td>
+                <td>{{ guardarPesos.PESO_TARAKG }} kg.</td>
+                <td>{{ guardarPesos.PESO_NETOKG }} kg.</td>
                 <td></td>
               </tr>
             </tfoot>
@@ -234,10 +284,13 @@
           <nav aria-label="Page navigation example">
             <ul class="pagination" *ngIf="infoPeso.CORRELATIVO > 0">
               <!-- Botón 'Anterior' -->
-              <li class="page-item" [class.disabled]="currentPage === 1">
+              <li
+                class="page-item"
+                [class.disabled]="infoInterna.currentPage === 1"
+              >
                 <a
                   class="page-link"
-                  (click)="getPesosHistorial(currentPage - 1)"
+                  (click)="getPesosHistorial(infoInterna.currentPage - 1)"
                   >Anterior</a
                 >
               </li>
@@ -246,7 +299,7 @@
               <li
                 *ngFor="let pageNumber of getPageNumbers()"
                 class="page-item"
-                [class.active]="pageNumber === currentPage"
+                [class.active]="pageNumber === infoInterna.currentPage"
               >
                 <a class="page-link" (click)="getPesosHistorial(pageNumber)">{{
                   pageNumber
@@ -256,11 +309,13 @@
               <!-- Botón 'Siguiente' -->
               <li
                 class="page-item"
-                [class.disabled]="currentPage === infoPeso.CORRELATIVO"
+                [class.disabled]="
+                  infoInterna.currentPage === infoPeso.CORRELATIVO
+                "
               >
                 <a
                   class="page-link"
-                  (click)="getPesosHistorial(currentPage + 1)"
+                  (click)="getPesosHistorial(infoInterna.currentPage + 1)"
                   >Siguiente</a
                 >
               </li>
@@ -269,34 +324,139 @@
         </div>
 
         <div class="weighing__main">
+          <table class="table cust-datatable" style="width: 100%">
+            <thead>
+              <tr>
+                <th>Báscula</th>
+                <th>Peso Bruto (Lb)</th>
+                <th>Peso Bruto (Kg)</th>
+                <th>Peso tara (Kg)</th>
+                <th>Peso Neto (Kg)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detalle of detallePeso; let i = index">
+                <td>{{ detalle.BAS_COD }}</td>
+                <td>{{ detalle.PESO_PESOBRUTOLB }}</td>
+                <td>{{ detalle.PESO_PESOBRUTOKG }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="detalle.PESO_TARAKG"
+                    (ngModelChange)="updatePesoNeto(i)"
+                  />
+                </td>
+                <td>{{ detalle.PESO_NETOKG }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="weighing__main">
           <div class="weighing__counter">
             <div class="counterTop">
               <div class="counterTop--left">Peso Bruto</div>
               <div class="counterTop--right">{{ peso }}</div>
             </div>
-            <div class="counterTop">
-              <div class="counterTop--left">{{ peso }}</div>
-              <div class="counterTop--right">0%</div>
-            </div>
-            <div class="counterBottom">
-              Kód vyjímky OLD IDispatch 0 z MSComm: Invalid port number ..
-            </div>
+            <div class="counterBottom">PESO EN BASCULA</div>
           </div>
         </div>
       </div>
     </div>
   </main>
   <aside class="sideMenu">
-    <div *ngFor="let bascula of resBasculas">
-      <button
-        class="btn"
-        [ngClass]="bascula.ACTIVA === true ? 'btnBasculaOn' : 'btnBasculaOff'"
-      >
-        <span class="fKey bold--darkBlue">{{ bascula.BAS_BUTTON }}</span>
-        <span class="regular">{{ bascula.BAS_COD }}</span>
-      </button>
+    <div *ngIf="!guiaParametros.bod" style="padding: 10px">
+      <p>Seleccione una bodega para ver el listado de básculas.</p>
+    </div>
+
+    <div *ngIf="guiaParametros.bod">
+      <div *ngFor="let bascula of resBasculas">
+        <button
+          (click)="getPeso(bascula)"
+          class="btn"
+          [ngClass]="bascula.ACTIVA === true ? 'btnBasculaOn' : 'btnBasculaOff'"
+          [disabled]="!bascula.ACTIVA"
+        >
+          <span class="fKey bold--darkBlue">{{ bascula.BAS_BUTTON }}</span>
+          <span class="regular">{{ bascula.BAS_COD }}</span>
+        </button>
+      </div>
     </div>
   </aside>
+
+  <!-- MODALES -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Listado de guías por manifiesto
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <table
+            ref="XmanifiestoTable"
+            id="tablaGuiasXmanifiesto"
+            data-order='[[ 1, "asc" ]]'
+            class="table cust-datatable dataTable no-footer table-responsive"
+          >
+            <thead>
+              <tr>
+                <th>Guía</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Peso Kg.</th>
+                <th>Consignatario</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let guiaXman of resGuiasXmani">
+                <td>
+                  <span class="mode mode_on">{{ guiaXman.GUIA }}</span>
+                </td>
+                <td>{{ guiaXman.fecha | date : "dd/MM/yyyy, HH:mm:ss" }}</td>
+                <td>{{ guiaXman.TIPOGUIA_COD }}</td>
+                <td>{{ guiaXman.GUIA_PESOKG }}</td>
+                <td>{{ guiaXman.GUIA_CONSIGNATARIO }}</td>
+                <td>
+                  <button
+                    class="btn btn-primary"
+                    (click)="guiaDeManifiesto(guiaXman.GUIA)"
+                  >
+                    <i class="fa fa-clone"></i> Consultar guía
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--TERMINA MODALES-->
+
   <footer class="footerMenu">
     <div class="footerMenu__items">
       <div class="footerMenu__item">
@@ -359,7 +519,8 @@
         </svg>
         <span class="desc bold--darkBlue">Bags</span>
       </div>
-      <div class="footerMenu__item is-active">
+      <div class="footerMenu__item" (click)="postPeso()">
+        <!-- is-active -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -372,7 +533,7 @@
             d="M17.134 7.714c.958.001 1.8.635 2.066 1.556l3.067 9.889c.012.041.018.084.019.127V21c0 .71-.576 1.286-1.286 1.286H3c-.71 0-1.286-.576-1.286-1.286v-1.714c0-.043.007-.086.02-.127l3.073-9.902.053-.158c.314-.827 1.108-1.383 2.004-1.385zm-9.42 3.643c-.355 0-.643.288-.643.643v6.857c0 .355.288.643.643.643.355 0 .643-.288.643-.643v-1.36c0-.086.052-.164.132-.198.08-.033.173-.014.234.047l1.966 1.965c.16.172.401.243.629.185.228-.058.406-.236.464-.464.058-.228-.013-.469-.185-.63L8.775 15.58c-.083-.084-.083-.219 0-.303l2.822-2.823c.236-.253.23-.648-.016-.893-.244-.244-.64-.251-.892-.015L8.723 13.51c-.061.06-.153.079-.233.046-.08-.034-.132-.111-.133-.198V12c0-.355-.288-.643-.643-.643zm7.715 0c-1.302 0-2.358 1.055-2.358 2.357v3.429c0 1.302 1.056 2.357 2.358 2.357 1.301 0 2.357-1.055 2.357-2.357v-.857c0-.355-.288-.643-.643-.643h-1.286c-.355 0-.643.288-.643.643 0 .355.288.643.643.643h.429c.118 0 .214.096.214.214 0 .591-.48 1.07-1.071 1.071-.592 0-1.07-.48-1.072-1.071v-3.429c0-.591.48-1.071 1.072-1.071.591 0 1.071.48 1.071 1.071 0 .355.288.643.643.643.355 0 .643-.288.643-.643 0-1.302-1.056-2.357-2.357-2.357zM12 1.714c1.42 0 2.571 1.152 2.571 2.572 0 1.42-1.15 2.571-2.571 2.571-1.42 0-2.571-1.151-2.571-2.571 0-1.42 1.15-2.572 2.571-2.572z"
           />
         </svg>
-        <span class="desc bold--darkBlue">Weighing</span>
+        <span class="desc bold--darkBlue">Guardar peso</span>
       </div>
     </div>
     <div class="footerMenu__station">

@@ -7,11 +7,11 @@ import { BasculasComponent } from './pages/basculas/basculas.component';
 import { PesajeComponent } from './pages/pesaje/pesaje.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: LandingComponent,
-        canActivate: [AuthGuard],
-    },
+    // {
+    //     path: '',
+    //     component: LandingComponent,
+    //     canActivate: [AuthGuard],
+    // },
     {
         path: 'basculas',
         component: BasculasComponent,
@@ -27,5 +27,5 @@ export const routes: Routes = [
         component: LoginComponent,
         canActivate: [NonAuthGuard]
     },
-    {path: '**', redirectTo: ''}
+    {path: '**', redirectTo: 'login'}
 ];

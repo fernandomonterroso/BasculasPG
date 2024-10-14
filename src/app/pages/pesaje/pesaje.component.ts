@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { DataService } from '../../shared/services/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Modal } from 'bootstrap';
 import {
   Bascula,
   Bodega,
@@ -9,9 +10,11 @@ import {
   GuiaParametros,
   InfoPeso,
   Peso,
+  User,
 } from '../../shared/interfaces/globales.interface';
 import { GuardarPesos } from '../../shared/models/guardar-pesos.model';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from '../../shared/services/user.service';
 
 @Component({
   selector: 'app-pesaje',
@@ -23,11 +26,17 @@ import { ToastrService } from 'ngx-toastr';
 export class PesajeComponent implements OnInit {
   resBasculas: Bascula[] = [];
   pesoGuia: Peso[] = [];
+  resGuiasXmani: Guia[] = [];
   infoPeso: InfoPeso = {
     CORRELATIVO: 0,
     PARAMETRO: 0,
     PESO_CODIGO: 0,
     PESO_ANIOCOD: 0,
+  };
+
+  infoInterna: any = {
+    repeso: true,
+    currentPage: 1,
   };
 
   detallePeso: any[] = [];
@@ -65,18 +74,26 @@ export class PesajeComponent implements OnInit {
     bod: null,
   };
 
-  currentPage: number = 1; // Variable global para llevar la página actual
+  user: User = {
+    USER_ID: 0,
+    USER_GAFETE:'',
+    BASCULAS:'N',
+  };
 
   guardarPesos: GuardarPesos;
-  constructor(private dataService: DataService, private toastr: ToastrService) {
-    this.guardarPesos = new GuardarPesos(); 
+  constructor(
+    private dataService: DataService,
+    private toastr: ToastrService,
+    private userService: UserService
+  ) {
+    this.guardarPesos = new GuardarPesos();
   }
 
   ngOnInit(): void {
-    this.getBasculas();
+    //this.getBasculas();
     this.getUser();
   }
-  
+
   getPageNumbers(): number[] {
     return Array.from({ length: this.infoPeso?.CORRELATIVO }, (_, i) => i + 1);
   }
@@ -87,32 +104,63 @@ export class PesajeComponent implements OnInit {
 
     if (this.resBasculas.some((item) => item.BAS_BUTTON === key)) {
       event.preventDefault();
-      this.getPeso(
-        this.resBasculas.find((item) => item.BAS_BUTTON === key)!
-      );
+      this.getPeso(this.resBasculas.find((item) => item.BAS_BUTTON === key)!);
     }
   }
 
-  getGuiaXManifiesto(): void {
-    console.log(
-      'Consulta por manifiesto con parámetros: ',
-      this.guiaParametros
-    );
+  onBodegaChange(selectedBodega: any): void {
+    if (selectedBodega) {
+      //console.log('Bodega seleccionada:', selectedBodega.BOD); // Usando el operador ?
+      this.getBasculas(selectedBodega.BOD);
+    }
+  }
+
+  private modalElement!: HTMLElement;
+  private modalInstance!: Modal;
+  GetGuiaXManifiesto(): void {
+    //guiaParametros.man_anio
+    //this.guiaParametros.bod.TIPOGUIA_COD
+    if (this.guiaParametros.bod?.TIPOGUIA_COD) {
+      this.dataService
+        .GetGuiaXManifiesto(
+          this.guiaParametros.man_anio,
+          this.guiaParametros.man_corr,
+          this.guiaParametros.bod.TIPOGUIA_COD
+        )
+        .subscribe(
+          (response) => {
+            console.log('respondio');
+            this.resGuiasXmani = response.data;
+            console.log(this.resGuiasXmani);
+
+            this.modalElement = document.getElementById(
+              'exampleModal'
+            ) as HTMLElement;
+
+            // Crear una instancia del modal
+            this.modalInstance = new Modal(this.modalElement);
+            this.modalInstance.show();
+          },
+          (error) => {
+            this.toastr.error(error.error.message);
+          }
+        );
+    } else {
+      this.toastr.error('Bodega no seleccionada.');
+    }
   }
 
   getUser(): void {
-    this.dataService.getUser().subscribe({
-      next: (res) => {
-        console.log(res);
-      },
-      error: (error) => {
-        console.error('Error fetching user:', error);
-      },
-    });
+    const user = this.userService.getUser();
+    if (user) {
+      this.user = user;
+    } else {
+      console.error('No user found in session storage');
+    }
   }
 
-  getBasculas(): void {
-    this.dataService.getBasculas('I').subscribe({
+  getBasculas(bodega: string): void {
+    this.dataService.getBasculas(bodega).subscribe({
       next: (res) => {
         this.resBasculas = res;
         this.basculasActivas();
@@ -130,7 +178,7 @@ export class PesajeComponent implements OnInit {
   }
 
   verificarBascula(bascula: Bascula): void {
-    this.dataService.checkBascula(bascula.BAS_ENDPOINT).subscribe({
+    this.dataService.checkBascula(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `https://localhost:7232/api/Bascula/v1`).subscribe({
       next: (res) => {
         bascula.ACTIVA = res.peso ? true : false;
         //this.peso = res.peso;
@@ -141,7 +189,20 @@ export class PesajeComponent implements OnInit {
     });
   }
 
+  guiaDeManifiesto(guia: string | null): void {
+    if (guia == null) {
+      // Maneja el caso en que la guía es null
+      return;
+    }
+    this.guiaParametros.guia_prefijo = guia.substring(0, 3);
+    this.guiaParametros.guia_num = guia.substring(3);
+    this.modalInstance.hide();
+    this.getGuiaData();
+  }
+  //getGuiaData
+
   getGuiaData(): void {
+    this.infoInterna.currentPage = 1;
     if (this.guiaParametros.bod?.TIPOGUIA_COD) {
       this.dataService
         .getKeysGuia(
@@ -162,10 +223,9 @@ export class PesajeComponent implements OnInit {
     }
   }
 
-  getPesosHistorial(correlativo:number=0) {
-
-    if(correlativo){
-      this.currentPage = correlativo;
+  getPesosHistorial(correlativo: number = 0) {
+    if (correlativo) {
+      this.infoInterna.currentPage = correlativo;
     }
 
     this.dataService.getPesos(this.guiaData, correlativo).subscribe(
@@ -173,8 +233,8 @@ export class PesajeComponent implements OnInit {
         this.pesoGuia = response.data.data;
         this.infoPeso = response.data.informacion;
 
-        if(!correlativo){
-          this.currentPage = response.data.informacion.CORRELATIVO;
+        if (!correlativo) {
+          this.infoInterna.currentPage = response.data.informacion.CORRELATIVO;
         }
 
         //this.currentPage = response.data.informacion.CORRELATIVO;
@@ -188,41 +248,127 @@ export class PesajeComponent implements OnInit {
   }
 
   calcularTotales() {
-    this.guardarPesos.PESO_PESOBRUTOLB = this.pesoGuia.reduce((total, peso) => total + (peso.PESO_PESOBRUTOLB || 0), 0);
-    this.guardarPesos.PESO_PESOBRUTOKG = this.pesoGuia.reduce(
-      (total, peso) => total + (peso.Peso_Pesobrutokg || 0),
-      0
+    this.guardarPesos.PESO_PESOBRUTOLB = parseFloat(
+      this.pesoGuia
+        .reduce(
+          (total, peso) => total + (peso.PESO_PESOBRUTOLB || 0), // Sumar cada peso
+          0
+        )
+        .toFixed(2) // Formato a 2 decimales
+    );
+    this.guardarPesos.PESO_PESOBRUTOKG = parseFloat(
+      this.pesoGuia
+        .reduce(
+          (total, peso) => total + (peso.Peso_Pesobrutokg || 0), // Sumar cada peso
+          0
+        )
+        .toFixed(2)
+    );
+    this.guardarPesos.PESO_NETOKG = parseFloat(
+      this.pesoGuia
+        .reduce(
+          (total, peso) => total + (peso.PESO_NETOKG || 0), // Sumar cada peso
+          0
+        )
+        .toFixed(2)
+    );
+    this.guardarPesos.PESO_TARAKG = parseFloat(
+      this.pesoGuia
+        .reduce(
+          (total, peso) => total + (peso.PESO_TARAKG || 0), // Sumar cada peso
+          0
+        )
+        .toFixed(2)
     );
   }
 
+  validatePeso(): boolean {
+    if (this.infoPeso.CORRELATIVO != this.infoPeso.PARAMETRO) {
+      this.toastr.error('No puedes modificar un peso menor al último', 'Error');
+      return false;
+    }
+    return true;
+  }
+
+  sendPesoData(): void {
+    this.dataService
+      .postPesos(
+        this.detallePeso,
+        this.infoInterna,
+        this.guiaData,
+        this.guiaParametros,
+        this.infoPeso
+      )
+      .subscribe({
+        next: (res) => {
+          this.getPesosHistorial(this.infoInterna.currentPage);
+          this.toastr.success(res.message, 'Éxito');
+          this.detallePeso = [];
+        },
+        error: (error) => {
+          this.toastr.error(
+            error.error?.message || 'Error inesperado',
+            'Error'
+          );
+        },
+      });
+  }
+
+  postPeso(): void {
+    if (!this.validatePeso()) {
+      return;
+    }
+
+    this.sendPesoData();
+  }
+
   getPeso(bascula: Bascula): void {
-   
-    
     this.dataService.getPeso(bascula.BAS_ENDPOINT).subscribe({
       next: (res) => {
         this.peso = parseFloat(res.peso);
         if (this.peso > 0) {
-          this.addPesoToDetail();
+          this.addPesoToDetail(bascula.BAS_COD, this.peso);
+        }else{
+          this.toastr.warning("peso en bascula debe ser mayor a 0.","Alerta");
         }
       },
       error: (error) => {
-        console.error('Error obteniendo peso:', error);
+        this.toastr.error(
+          error.error?.message ||
+            'Ocurrio un error inesperado al obtener el peso en la bascula',
+          'Error obteniendo peso'
+        );
       },
     });
   }
 
   limpiarDatos(): void {}
 
-  addPesoToDetail(): void {
+  addPesoToDetail(BAS_COD: string, peso: number): void {
     const detalle = {
-      DETPESO_BASCULA: this.peso,
-      DETPESO_PESOBRUTLB: (this.peso * 2.20462).toFixed(2),
-      DETPESO_PESOBRUTOKG: this.peso.toFixed(2),
+      PESO_BASCULA: this.peso,
+      PESO_PESOBRUTOLB: (this.peso * 2.20462).toFixed(2),
+      PESO_PESOBRUTOKG: this.peso.toFixed(2),
+      BAS_COD: BAS_COD,
+      PESO_CANTPIEZA: 0,
+      PESO_TARAKG: 0, // Inicialmente 0, editable en la tabla
+      USER_ID: this.user.USER_ID,
+      PESO_CORREEQUIPO: this.detallePeso.length + 1, // Número de ítem generado automáticamente
+      PESO_NETOKG: peso.toFixed(2), // Inicialmente igual al peso bruto menos TARA
+      BAS_BODEGA: this.resBodegas.find(
+        (x) => x.TIPOGUIA_COD == this.guiaData.TIPOGUIA_COD
+      )?.BOD,
     };
     this.detallePeso.push(detalle);
-    console.log(JSON.stringify(this.detallePeso));
-    
-    this.evaluateTara();
+  }
+
+  updatePesoNeto(index: number): void {
+    const detalle = this.detallePeso[index];
+    // Actualiza el valor de PESO_NETOKG en base al peso bruto y TARA
+    detalle.PESO_NETOKG = (
+      parseFloat(detalle.PESO_PESOBRUTOKG) -
+      parseFloat(detalle.PESO_TARAKG || 0)
+    ).toFixed(2);
   }
 
   evaluateTara(): void {}

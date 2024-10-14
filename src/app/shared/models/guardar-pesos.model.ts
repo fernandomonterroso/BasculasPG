@@ -14,6 +14,7 @@ export class GuardarPesos {
       public BAS_COD: number = 0,
       public PESO_PESOBRUTOKG: number = 0,
       public PESO_TARAKG: number = 0,
+      public PESO_NETOKG: number = 0,
       public PESO_TARAMAN: number = 0,
       public PESO_TARAMANKG: number = 0,
       public COBRO_ENCAJA: 'Y' | 'N' = 'N',
