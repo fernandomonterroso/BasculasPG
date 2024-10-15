@@ -1,12 +1,35 @@
-<div class="container" style="max-width: 98vw;">
+<div class="container" style="max-width: 96vw;">
   <br />
-  <input
-    type="text"
-    class="form-control mb-3"
-    placeholder="Buscar..."
-    (input)="onQuickFilterChanged($event)"
-  />
+  
+  <!-- Título con estilo -->
+  <div class="text-center mb-4">
+    <h2 class="display-6 text-primary">Básculas</h2>
+    <p class="text-muted">Listado de basculas disponibles por bodega</p>
+  </div>
 
+  <!-- Filtros: Select de Bodegas y Búsqueda -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <label for="bodegaSelect" class="form-label">Seleccionar Bodega</label>
+      <select id="bodegaSelect" class="form-select" [(ngModel)]="selectedBodega" (change)="onBodegaChange($event)">
+        <option value="" disabled selected>Seleccione una Bodega</option>
+        <option *ngFor="let bodega of resBodegas" [value]="bodega.BOD">{{ bodega.title }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label for="searchInput" class="form-label">Buscar Báscula</label>
+      <input
+        id="searchInput"
+        type="text"
+        class="form-control"
+        placeholder="Buscar..."
+        (input)="onQuickFilterChanged($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Contenedor de la tabla -->
   <div class="content" style="width: 100%; height: 100%">
     <ag-grid-angular
       style="width: 100%; height: 100%"

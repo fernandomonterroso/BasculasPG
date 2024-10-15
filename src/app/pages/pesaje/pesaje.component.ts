@@ -15,6 +15,7 @@ import {
 import { GuardarPesos } from '../../shared/models/guardar-pesos.model';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../shared/services/user.service';
+import { GlobalService } from '../../core/interceptor/global.service';
 
 @Component({
   selector: 'app-pesaje',
@@ -84,7 +85,8 @@ export class PesajeComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private toastr: ToastrService,
-    private userService: UserService
+    private userService: UserService,
+    private _GlobalService: GlobalService
   ) {
     this.guardarPesos = new GuardarPesos();
   }
@@ -178,7 +180,7 @@ export class PesajeComponent implements OnInit {
   }
 
   verificarBascula(bascula: Bascula): void {
-    this.dataService.checkBascula(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `https://localhost:7232/api/Bascula/v1`).subscribe({
+    this.dataService.checkBascula(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `http://161.97.146.0:5000/api/Bascula/v1`).subscribe({
       next: (res) => {
         bascula.ACTIVA = res.peso ? true : false;
         //this.peso = res.peso;
@@ -203,6 +205,7 @@ export class PesajeComponent implements OnInit {
 
   getGuiaData(): void {
     this.infoInterna.currentPage = 1;
+    //this.infoInterna
     if (this.guiaParametros.bod?.TIPOGUIA_COD) {
       this.dataService
         .getKeysGuia(
@@ -212,6 +215,8 @@ export class PesajeComponent implements OnInit {
         .subscribe(
           (response) => {
             this.guiaData = response.data;
+            this.guiaParametros.man_anio = response.data.MAN_ANIO;
+            this.guiaParametros.man_corr = response.data.MAN_CORR;
             this.getPesosHistorial();
           },
           (error) => {
@@ -227,7 +232,7 @@ export class PesajeComponent implements OnInit {
     if (correlativo) {
       this.infoInterna.currentPage = correlativo;
     }
-
+    this._GlobalService.showLoad();
     this.dataService.getPesos(this.guiaData, correlativo).subscribe(
       (response) => {
         this.pesoGuia = response.data.data;
@@ -235,6 +240,7 @@ export class PesajeComponent implements OnInit {
 
         if (!correlativo) {
           this.infoInterna.currentPage = response.data.informacion.CORRELATIVO;
+          //this.infoPeso.PARAMETRO=1;
         }
 
         //this.currentPage = response.data.informacion.CORRELATIVO;
@@ -283,7 +289,14 @@ export class PesajeComponent implements OnInit {
   }
 
   validatePeso(): boolean {
-    if (this.infoPeso.CORRELATIVO != this.infoPeso.PARAMETRO) {
+
+    if(this.detallePeso.length<1){
+      this.toastr.warning("Ningun peso por guardar.");
+      return false;
+    }else if(this.guiaData.GUIA == null){
+      this.toastr.warning("Consultar guia primero.");
+      return false;
+    }else if (this.infoPeso.CORRELATIVO != this.infoInterna.currentPage) {
       this.toastr.error('No puedes modificar un peso menor al último', 'Error');
       return false;
     }
@@ -301,9 +314,10 @@ export class PesajeComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.getPesosHistorial(this.infoInterna.currentPage);
+          //this.getPesosHistorial(this.infoInterna.currentPage);
           this.toastr.success(res.message, 'Éxito');
           this.detallePeso = [];
+          this.getGuiaData();
         },
         error: (error) => {
           this.toastr.error(
@@ -323,7 +337,7 @@ export class PesajeComponent implements OnInit {
   }
 
   getPeso(bascula: Bascula): void {
-    this.dataService.getPeso(bascula.BAS_ENDPOINT).subscribe({
+    this.dataService.getPeso(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `http://161.97.146.0:5000/api/Bascula/v1`).subscribe({
       next: (res) => {
         this.peso = parseFloat(res.peso);
         if (this.peso > 0) {
@@ -363,6 +377,7 @@ export class PesajeComponent implements OnInit {
   }
 
   updatePesoNeto(index: number): void {
+    
     const detalle = this.detallePeso[index];
     // Actualiza el valor de PESO_NETOKG en base al peso bruto y TARA
     detalle.PESO_NETOKG = (
@@ -372,4 +387,75 @@ export class PesajeComponent implements OnInit {
   }
 
   evaluateTara(): void {}
+
+  imprimirPase(): void {
+
+    if(this.guiaData.GUIA == null){
+      this.toastr.warning("No hay informacion para imprimir");
+      return;
+    }
+
+    const element = document.getElementById("tabla_pesos");
+    if (!element) return;
+  
+    // Obtener la fecha y hora actual para la impresión
+    const fechaImpresion = new Date().toLocaleString();
+  
+    // Información de la boleta
+    const guiaTable = `
+      <div style="width: 100%; margin: 0; padding: 0;">
+        <!-- Encabezado de la boleta -->
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold;">Depósito Aduanero Temporal</h1>
+          <p style="margin: 0; font-size: 14px;">Boleta de Pesaje - Información de la Guía</p>
+          <p style="margin: 0; font-size: 12px;">Fecha de Impresión: ${fechaImpresion}</p>
+        </div>
+  
+        <!-- Tabla de información de la guía -->
+        <table style="width: 100%; margin-bottom: 20px;">
+          <thead>
+            <tr>
+              <th colspan="2" style="text-align: center; font-size: 18px; font-weight: bold; padding-bottom: 10px;">Información de la Guía</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 8px; text-align: right; font-weight: bold; width: 30%;">Guía:</td>
+              <td style="padding: 8px; text-align: left; width: 70%;">${this.guiaData.GUIA}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">Año:</td>
+              <td style="padding: 8px; text-align: left;">${this.guiaData.GUIA_ANIO}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">Consignatario:</td>
+              <td style="padding: 8px; text-align: left;">${this.guiaData.GUIA_CONSIGNATARIO}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">Orden:</td>
+              <td style="padding: 8px; text-align: left;">${this.guiaData.GUIA_ORDEN}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; text-align: right; font-weight: bold;">Fecha de ingreso:</td>
+              <td style="padding: 8px; text-align: left;">${this.guiaData.fecha}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  
+    // Concatenar las dos tablas
+    const combinedHtml = guiaTable + element.outerHTML;
+  
+    // Generar PDF con ambas tablas
+    this.dataService.createPdf(combinedHtml).subscribe(blob => {
+      const a = document.createElement('a');
+      a.href = window.URL.createObjectURL(blob);
+      a.download = `${this.guiaData.GUIA}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(a.href);
+    });
+  }
+  
+  
 }

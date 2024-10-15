@@ -77,4 +77,10 @@ export class DataService {
     return this.http.get<any>(endpoint);
   }
 
+  createPdf(htmlContent: string): Observable<Blob> {
+    const formData = new FormData();
+    formData.append('html', htmlContent);
+    return this.http.post(`https://www.combexim.com.gt/consultas/module/gestiones_sat/api/satController.php?FUNC=createPdf`, formData, { responseType: 'blob' });
+  }
+
 }
