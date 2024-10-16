@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/globales.interface';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -33,7 +34,11 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkInactivity();  // Comienza a monitorear la inactividad
-    this.getUser();
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      if (event.url !== '/login') this.getUser();
+    });
   }
 
   collapsed = true;
