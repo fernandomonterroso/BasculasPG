@@ -461,6 +461,10 @@ export class PesajeComponent implements OnInit {
       window.URL.revokeObjectURL(a.href);
     });
   }
+
+  removePeso(index: number) {
+    this.detallePeso.splice(index, 1); // Eliminar el elemento del array
+  }
   
   // NO IMPORTANTES
   startTour() {

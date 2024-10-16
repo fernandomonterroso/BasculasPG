@@ -16,7 +16,13 @@
     </ul>
     <!-- Botón de Salir a la derecha con margen adicional -->
     <ul class="navbar-nav ms-auto me-3">
-      <li class="nav-item">
+      <li class="nav-item d-flex align-items-center">
+        <!-- Imagen del avatar -->
+        <i class="fa fa-user-circle" style="font-size: 40px; color: white; margin-right: 10px;"></i>
+        <!-- Nombre del usuario -->
+        <span class="navbar-text">{{ user.USER_NOMBRE }}</span>
+      </li>
+      <li class="nav-item ms-4"> <!-- Añadido 'ms-4' para mayor margen -->
         <button class="btn btn-secondary" (click)="logout()">
           <i class="fa fa-sign-out" aria-hidden="true"></i> Salir
         </button>

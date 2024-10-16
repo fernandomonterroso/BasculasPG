@@ -341,7 +341,7 @@
         </div>
 
         <div class="weighing__main">
-          <table class="table cust-datatable" >
+          <table class="table cust-datatable">
             <thead>
               <tr>
                 <th colspan="6" class="text-center"><strong>Pesos tomados de bascula</strong></th>
@@ -352,6 +352,7 @@
                 <th>Peso Bruto (Kg)</th>
                 <th>Peso tara (Kg)</th>
                 <th>Peso Neto (Kg)</th>
+                <th>Acciones</th> <!-- Nueva columna para acciones -->
               </tr>
             </thead>
             <tbody>
@@ -367,10 +368,17 @@
                   />
                 </td>
                 <td>{{ detalle.PESO_NETOKG }}</td>
+                <td>
+                  <!-- Botón para eliminar con ícono de basura -->
+                  <button class="btn btn-danger" (click)="removePeso(i)" title="Eliminar este peso">
+                    <i class="fa fa-trash"></i> <!-- Icono de basura -->
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+        
 
         <div class="weighing__main">
           <div class="weighing__counter">

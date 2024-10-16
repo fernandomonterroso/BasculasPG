@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { User } from '../../interfaces/globales.interface';
 
 @Component({
   selector: 'app-navbar',
@@ -11,8 +13,14 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
   currentRoute: string;
+  user: User = {
+    USER_ID: 0,
+    USER_GAFETE:'',
+    BASCULAS:'N',
+    USER_NOMBRE:'',
+  };
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private userService: UserService,) {
     this.currentRoute = this.router.url;
     router.events.subscribe(() => {
       if (this.router.url !== this.currentRoute) {
@@ -25,6 +33,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkInactivity();  // Comienza a monitorear la inactividad
+    this.getUser();
   }
 
   collapsed = true;
@@ -60,5 +69,14 @@ export class NavbarComponent implements OnInit {
         this.logout();  // Cierra sesión y redirige al login si ha expirado
       }
     }, 1000 * 60); // Comprobar cada minuto
+  }
+
+  getUser(): void {
+    const user = this.userService.getUser();
+    if (user) {
+      this.user = user;
+    } else {
+      console.error('No user found in session storage');
+    }
   }
 }
