@@ -15,6 +15,7 @@
             maxlength="8"
             [(ngModel)]="gafete"
             [ngModelOptions]="{ standalone: true }"
+            id="gafete"
             onkeyup="javascript:this.value=this.value.toUpperCase().replace(/\D/g, '').replace(/(\d{2})(\d{0,5})/, '$1-$2');"
           />
         </div>

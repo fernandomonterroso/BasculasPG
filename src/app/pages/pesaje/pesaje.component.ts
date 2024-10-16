@@ -125,7 +125,6 @@ export class PesajeComponent implements OnInit {
 
   onBodegaChange(selectedBodega: any): void {
     if (selectedBodega) {
-      //console.log('Bodega seleccionada:', selectedBodega.BOD); // Usando el operador ?
       this.getBasculas(selectedBodega.BOD);
     }
   }
@@ -133,8 +132,6 @@ export class PesajeComponent implements OnInit {
   private modalElement!: HTMLElement;
   private modalInstance!: Modal;
   GetGuiaXManifiesto(): void {
-    //guiaParametros.man_anio
-    //this.guiaParametros.bod.TIPOGUIA_COD
     if (this.guiaParametros.bod?.TIPOGUIA_COD) {
       this.dataService
         .GetGuiaXManifiesto(
@@ -206,7 +203,6 @@ export class PesajeComponent implements OnInit {
 
   guiaDeManifiesto(guia: string | null): void {
     if (guia == null) {
-      // Maneja el caso en que la guía es null
       return;
     }
     this.guiaParametros.guia_prefijo = guia.substring(0, 3);
@@ -253,11 +249,8 @@ export class PesajeComponent implements OnInit {
 
         if (!correlativo) {
           this.infoInterna.currentPage = response.data.informacion.CORRELATIVO;
-          //this.infoPeso.PARAMETRO=1;
         }
 
-        //this.currentPage = response.data.informacion.CORRELATIVO;
-        // Calcular totales
         this.calcularTotales();
       },
       (error) => {
@@ -327,7 +320,6 @@ export class PesajeComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          //this.getPesosHistorial(this.infoInterna.currentPage);
           this.toastr.success(res.message, 'Éxito');
           this.detallePeso = [];
           this.getGuiaData();
