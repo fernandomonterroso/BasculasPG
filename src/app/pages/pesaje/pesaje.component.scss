@@ -327,10 +327,14 @@ body {
     grid-area: footer;
     display: flex;
     justify-content: space-between;
-    position: relative;
+    position: fixed; /* Cambiado a fixed */
+    bottom: 0; /* Fijado en la parte inferior */
+    left: 0;
+    width: 100%; /* Asegurar que ocupe todo el ancho */
     background-color: #fff;
     border-top: 1px solid #cad2dd;
     box-shadow: 0 0 15px 0 rgba(136, 136, 156, .3);
+   
 }
 
 .footerMenu__items {
@@ -343,42 +347,41 @@ body {
     position: relative;
     padding: 0 30px;
     height: 59px;
-    bottom: 0;
     cursor: pointer;
     transition: 0.25s all ease-in-out;
 }
 
-    .footerMenu__item:last-of-type {
-        border-right: 1px solid #cad2dd;
-    }
+.footerMenu__item:last-of-type {
+    border-right: 1px solid #cad2dd;
+}
 
-    .footerMenu__item:hover:not(.is-disabled), .footerMenu__item.is-active {
-        position: relative;
-        height: 70px;
-        bottom: 11px;
-        background-color: #0068ff;
-    }
+.footerMenu__item:hover:not(.is-disabled), .footerMenu__item.is-active {
+    position: relative;
+    height: 70px;
+    bottom: 11px;
+    background-color: #0068ff;
+}
 
-        .footerMenu__item:hover:not(.is-disabled) .bold--darkBlue, .footerMenu__item.is-active .bold--darkBlue {
-            color: #fff;
-        }
+.footerMenu__item:hover:not(.is-disabled) .bold--darkBlue, .footerMenu__item.is-active .bold--darkBlue {
+    color: #fff;
+}
 
-        .footerMenu__item:hover:not(.is-disabled) svg path, .footerMenu__item.is-active svg path {
-            transition: 0.3s fill ease-in-out;
-            fill: #fff !important;
-        }
+.footerMenu__item:hover:not(.is-disabled) svg path, .footerMenu__item.is-active svg path {
+    transition: 0.3s fill ease-in-out;
+    fill: #fff !important;
+}
 
-    .footerMenu__item svg {
-        margin-right: 16px;
-    }
+.footerMenu__item svg {
+    margin-right: 16px;
+}
 
-    .footerMenu__item.is-disabled {
-        cursor: default;
-    }
+.footerMenu__item.is-disabled {
+    cursor: default;
+}
 
-        .footerMenu__item.is-disabled .bold--darkBlue {
-            color: #d5dbe5;
-        }
+.footerMenu__item.is-disabled .bold--darkBlue {
+    color: #d5dbe5;
+}
 
 .footerMenu__station {
     display: flex;
@@ -386,13 +389,14 @@ body {
     width: 170px;
 }
 
-    .footerMenu__station svg {
-        margin: 0 17px;
-    }
+.footerMenu__station svg {
+    margin: 0 17px;
+}
 
 .footerMenu__item + .footerMenu__item {
     border-left: 1px solid #cad2dd;
 }
+
 
 .content__header {
     padding: 20px;
@@ -416,7 +420,7 @@ body {
 .weighing__main {
     display: flex;
     flex: 1;
-    padding: 30px 50px 40px;
+    padding: 10px 10px 10px;
 }
 
 .weighing__row {

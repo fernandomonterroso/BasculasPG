@@ -16,6 +16,7 @@ import { GuardarPesos } from '../../shared/models/guardar-pesos.model';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../shared/services/user.service';
 import { GlobalService } from '../../core/interceptor/global.service';
+import introJs from 'intro.js';
 
 @Component({
   selector: 'app-pesaje',
@@ -94,6 +95,7 @@ export class PesajeComponent implements OnInit {
   ngOnInit(): void {
     //this.getBasculas();
     this.getUser();
+    this.startTour();
   }
 
   getPageNumbers(): number[] {
@@ -103,12 +105,23 @@ export class PesajeComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
-
+  
     if (this.resBasculas.some((item) => item.BAS_BUTTON === key)) {
       event.preventDefault();
       this.getPeso(this.resBasculas.find((item) => item.BAS_BUTTON === key)!);
+    } 
+    // Si se presiona Ctrl + F12
+    else if (event.ctrlKey && event.code === 'F12') {
+      event.preventDefault();
+      this.basculasActivas();
+    }
+    // Si se presiona Ctrl + F11
+    else if (event.ctrlKey && event.code === 'F11') {
+      event.preventDefault();
+      this.postPeso();
     }
   }
+  
 
   onBodegaChange(selectedBodega: any): void {
     if (selectedBodega) {
@@ -457,5 +470,64 @@ export class PesajeComponent implements OnInit {
     });
   }
   
-  
+  // NO IMPORTANTES
+  startTour() {
+    const intro = introJs();
+
+    intro.setOptions({
+      steps: [
+        {
+          title: 'Bievenido',
+          intro: "al sistema de toma de pesos por medio de lectura del puerto searial y almacenar el peso en una guia. Te recomiendo ir cumpliendo los pasos directamente. Datos de prueba: \n https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293"
+        },
+        {
+          element: '#selectBodega', // Elemento bodega
+          intro: 'Selecciona la bodega en este campo.',
+          position: 'bottom'
+        },{
+          element: '#guiaInfo', // Elemento guía
+          intro: 'Aquí puedes consultar la información de la guía ingresando el prefijo y el número.',
+          position: 'bottom'
+        },{
+          element: '#porManifiesto',
+          intro: 'Aquí puedes consultar la información de la guía ingresando el año correlativo de manifiesto.',
+          position: 'bottom'
+        },{
+          element: '#listaBasculas',
+          title: 'Listado de basculas',
+          intro: 'Veras el listado de basculas disponibles, presiona la tecla que indica o el botton directamente.',
+          position: 'bottom'
+        },
+        {
+          element: '#tabla_pesos', // Elemento historial de pesaje
+          intro: 'Aquí puedes visualizar el historial de pesaje de la guia consultada con detalles de peso bruto, neto, y fecha.',
+          position: 'top'
+        },
+        {
+          element: '#guardarPeso', // Elemento para guardar peso
+          intro: 'Este botón guarda el peso de la lectura del puerto serial.',
+          position: 'top'
+        },
+        {
+          element: '#imprimirPase', // Elemento para imprimir pase
+          intro: 'Imprime la boleta de pesaje haciendo clic en este botón.',
+          position: 'top'
+        },{
+          title: 'Listo!',
+          intro: "Puedes tomar pesos. Datos de prueba: \n https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293"
+        },
+      ],
+      exitOnOverlayClick: false
+    });
+
+    // Mostrar el tour solo la primera vez
+    intro.oncomplete(() => {
+      localStorage.setItem('tourCompleted', 'true');
+    });
+
+    // Mostrar el tour solo si no se ha completado
+    if (!localStorage.getItem('tourCompleted')) {
+      intro.start();
+    }
+  }
 }
