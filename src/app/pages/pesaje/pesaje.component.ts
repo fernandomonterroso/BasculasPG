@@ -190,7 +190,7 @@ export class PesajeComponent implements OnInit {
   }
 
   verificarBascula(bascula: Bascula): void {
-    this.dataService.checkBascula(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `http://161.97.146.0:5000/api/Bascula/v1`).subscribe({
+    this.dataService.checkBascula(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `https://apibasculas.sistemasdeguatemala.online/api/Bascula/v1`).subscribe({
       next: (res) => {
         bascula.ACTIVA = res.peso ? true : false;
         //this.peso = res.peso;
@@ -342,7 +342,7 @@ export class PesajeComponent implements OnInit {
   }
 
   getPeso(bascula: Bascula): void {
-    this.dataService.getPeso(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `http://161.97.146.0:5000/api/Bascula/v1`).subscribe({
+    this.dataService.getPeso(this.user.BASCULAS ? bascula.BAS_ENDPOINT: `https://apibasculas.sistemasdeguatemala.online/api/Bascula/v1`).subscribe({
       next: (res) => {
         this.peso = parseFloat(res.peso);
         if (this.peso > 0) {
