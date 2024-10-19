@@ -473,49 +473,53 @@ export class PesajeComponent implements OnInit {
     intro.setOptions({
       steps: [
         {
-          title: 'Bievenido',
-          intro: "al sistema de toma de pesos por medio de lectura del puerto searial y almacenar el peso en una guia. Te recomiendo ir cumpliendo los pasos directamente. Datos de prueba: \n https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293"
+          title: 'Bienvenido',
+          intro: `Este es el sistema de toma de pesos mediante la lectura del puerto serial y el almacenamiento del peso en una guía. Te recomendamos seguir los pasos indicados. Puedes usar los siguientes  <a href="https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293" target="_blank">Datos de prueba</a>`
         },
         {
           element: '#selectBodega', // Elemento bodega
           intro: 'Selecciona la bodega en este campo.',
           position: 'bottom'
-        },{
+        },
+        {
           element: '#guiaInfo', // Elemento guía
-          intro: 'Aquí puedes consultar la información de la guía ingresando el prefijo y el número.',
+          intro: 'Aquí puedes consultar la información de la guía ingresando el prefijo y el número correspondiente.',
           position: 'bottom'
-        },{
+        },
+        {
           element: '#porManifiesto',
-          intro: 'Aquí puedes consultar la información de la guía ingresando el año correlativo de manifiesto.',
+          intro: 'Consulta la información de la guía ingresando el año correlativo del manifiesto.',
           position: 'bottom'
-        },{
+        },
+        {
           element: '#listaBasculas',
-          title: 'Listado de basculas',
-          intro: 'Veras el listado de basculas disponibles, presiona la tecla que indica o el botton directamente.',
+          title: 'Listado de básculas',
+          intro: 'Verás el listado de básculas disponibles. Puedes presionar la tecla indicada o hacer clic en el botón directamente.',
           position: 'bottom'
         },
         {
           element: '#tabla_pesos', // Elemento historial de pesaje
-          intro: 'Aquí puedes visualizar el historial de pesaje de la guia consultada con detalles de peso bruto, neto, y fecha.',
+          intro: 'Aquí puedes ver el historial de pesajes de la guía consultada, incluyendo detalles como peso bruto, neto y la fecha.',
           position: 'top'
         },
         {
           element: '#guardarPeso', // Elemento para guardar peso
-          intro: 'Este botón guarda el peso de la lectura del puerto serial.',
+          intro: 'Este botón guarda el peso leído desde el puerto serial.',
           position: 'top'
         },
         {
           element: '#imprimirPase', // Elemento para imprimir pase
           intro: 'Imprime la boleta de pesaje haciendo clic en este botón.',
           position: 'top'
-        },{
-          title: 'Listo!',
-          intro: "Puedes tomar pesos. Datos de prueba: \n https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293"
         },
+        {
+          title: '¡Listo!',
+          intro: "Puedes comenzar a tomar los pesos. Datos de prueba: \n https://docs.google.com/spreadsheets/d/1Cgx3OVYTxmySDn0zffBiSo-tdoXhZyFw/edit?usp=drive_link&ouid=110731917126285182293"
+        }
       ],
       exitOnOverlayClick: false
     });
-
+    
     // Mostrar el tour solo la primera vez
     intro.oncomplete(() => {
       localStorage.setItem('tourCompleted', 'true');
