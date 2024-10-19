@@ -29,66 +29,73 @@ Antes de ejecutar este proyecto, asegúrate de tener instalado:
 
    ```bash
    git clone https://github.com/fernandomonterroso/BasculasPG.git
-Accede al directorio del proyecto:
+   ```
 
-bash
-Copiar código
-cd BasculasPG
-Instala las dependencias necesarias:
+2. Accede al directorio del proyecto:
 
-bash
-Copiar código
-npm install
-Ejecución del Proyecto
+   ```bash
+   cd BasculasPG
+   ```
+
+3. Instala las dependencias necesarias:
+
+   ```bash
+   npm install
+   ```
+
+## Ejecución del Proyecto
+
 Para ejecutar el proyecto en un entorno de desarrollo, usa el siguiente comando:
 
-bash
-Copiar código
+```bash
 ng serve
-Esto iniciará un servidor local en la URL: http://localhost:4200/.
+```
 
-Configuración
-Variables de Entorno
-Puedes configurar las variables de entorno creando o modificando el archivo src/environments/environment.ts. Ejemplo:
+Esto iniciará un servidor local en la URL: `http://localhost:4200/`.
 
-typescript
-Copiar código
+## Configuración
+
+### Variables de Entorno
+
+Puedes configurar las variables de entorno creando o modificando el archivo `src/environments/environment.ts`. Ejemplo:
+
+```typescript
 export const environment = {
   production: false,
   apiUrl: 'https://apibasculas.sistemasdeguatemala.online/api',
 };
-Compilación para Producción
+```
+
+### Compilación para Producción
+
 Para compilar el proyecto para producción, ejecuta:
 
-bash
-Copiar código
+```bash
 ng build --prod
-Los archivos compilados estarán disponibles en el directorio dist/.
+```
 
-Funcionalidades Clave
-Login: Los usuarios deben autenticarse con su número de gafete.
-Pesaje: Captura de pesos en tiempo real utilizando básculas conectadas.
-Generación de Reportes: Permite generar un PDF con la información del pesaje registrado.
-Contribución
+Los archivos compilados estarán disponibles en el directorio `dist/`.
+
+## Funcionalidades Clave
+
+- **Login**: Los usuarios deben autenticarse con su número de gafete.
+- **Pesaje**: Captura de pesos en tiempo real utilizando básculas conectadas.
+- **Generación de Reportes**: Permite generar un PDF con la información del pesaje registrado.
+
+## Contribución
+
 Si deseas contribuir a este proyecto:
 
-Haz un fork del repositorio.
-Crea una nueva rama con tu feature: git checkout -b feature-nueva-funcionalidad
-Haz commit de tus cambios: git commit -m 'Agrega nueva funcionalidad'
-Haz push a tu rama: git push origin feature-nueva-funcionalidad
-Abre un pull request.
-Licencia
-Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para obtener más detalles.
+1. Haz un fork del repositorio.
+2. Crea una nueva rama con tu feature: `git checkout -b feature-nueva-funcionalidad`
+3. Haz commit de tus cambios: `git commit -m 'Agrega nueva funcionalidad'`
+4. Haz push a tu rama: `git push origin feature-nueva-funcionalidad`
+5. Abre un pull request.
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo `LICENSE` para obtener más detalles.
+
+---
 
 ¡Gracias por utilizar el sistema de pesaje de básculas para depósitos aduaneros!
-
-markdown
-Copiar código
-
-### Explicación:
-
-- El archivo incluye una descripción clara del proyecto, sus características y tecnologías utilizadas.
-- Proporciona pasos para clonar, instalar dependencias, ejecutar y compilar el proyecto.
-- También incluye una sección para la contribución al código y la licencia del proyecto.
-
-Puedes personalizar este `README.md` según las necesidades específicas de tu proyecto.
